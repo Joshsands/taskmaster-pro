@@ -45,6 +45,67 @@ var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
+//sortable columns
+$(".card .list-group").sortable({
+  connectWith: $(".card .list-group"),
+  scroll: false,
+  tolerance: "pointer",
+  helper: "clone",
+  // activate: function(event) {
+  //   console.log("activate", this);
+  // },
+  // deactivate: function(event) {
+  //   console.log("deactive", this);
+  // },
+  // over: function(event) {
+  //   console.log("over", event.target);
+  // },
+  // out: function(event) {
+  //   console.log("out", event.target);
+  // },
+  update: function(event) {
+  var tempArr = [];
+  
+    $(this).children().each(function() {
+    var text = $(this)
+    .find("p")
+    .text()
+    .trim();
+
+    var date = $(this)
+    .find("span")
+    .text()
+    .trim();
+
+    tempArr.push({
+      text: text,
+      date: date
+    });
+  });
+  var arrName = $(this)
+  .attr("id")
+  .replace("list-", "");
+
+  tasks[arrName] = tempArr;
+  saveTasks();
+  }
+});
+
+// droppable into trash by dragging
+$("#trash").droppable({
+  accept: ".card .list-group-item",
+  tolerence: "touch",
+  drop: function(event, ui) {
+    ui.draggable.remove();
+  }
+  // over: function(event, ui) {
+  //   console.log("over");
+  // },
+  // out: function(event, ui) {
+  //   console.log("out");
+  // }
+});
+
 // selects p element to be edited and creates textarea
 $(".list-group").on("click", "p", function() {
   var text = $(this)
